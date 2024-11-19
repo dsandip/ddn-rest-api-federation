@@ -1,0 +1,57 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Author
+  fields:
+    - name: id
+      type: Float!
+    - name: name
+      type: String!
+  graphql:
+    typeName: Author
+    inputTypeName: AuthorInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mynodejs
+      dataConnectorObjectType: Author
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Author
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - name
+
+---
+kind: Command
+version: v1
+definition:
+  name: GetAuthor
+  outputType: Author!
+  arguments:
+    - name: authorId
+      type: Float!
+      description: ID of the author to fetch (defaults to 1)
+  source:
+    dataConnectorName: mynodejs
+    dataConnectorCommand:
+      function: getAuthor
+  graphql:
+    rootFieldName: getAuthor
+    rootFieldKind: Query
+  description: Get author details by ID
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: GetAuthor
+  permissions:
+    - role: admin
+      allowExecution: true
+

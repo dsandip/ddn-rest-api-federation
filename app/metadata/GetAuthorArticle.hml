@@ -1,0 +1,87 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Article
+  fields:
+    - name: authorId
+      type: Float!
+    - name: id
+      type: Float!
+    - name: title
+      type: String!
+  graphql:
+    typeName: Article
+    inputTypeName: ArticleInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mynodejs
+      dataConnectorObjectType: Article
+      fieldMapping:
+        authorId:
+          column:
+            name: author_id
+        id:
+          column:
+            name: id
+        title:
+          column:
+            name: title
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Article
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - authorId
+          - id
+          - title
+
+---
+kind: Command
+version: v1
+definition:
+  name: GetAuthorArticle
+  outputType: Article!
+  arguments:
+    - name: authorId
+      type: Float!
+      description: ID of the author whose article to fetch (defaults to 1)
+  source:
+    dataConnectorName: mynodejs
+    dataConnectorCommand:
+      function: getAuthorArticle
+  graphql:
+    rootFieldName: getAuthorArticle
+    rootFieldKind: Query
+  description: Get an article by author ID
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: GetAuthorArticle
+  permissions:
+    - role: admin
+      allowExecution: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: articleAuthor
+  sourceType: Article
+  target:
+    command: 
+      name: GetAuthor
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: authorId
+      target:
+        argument:
+          argumentName: authorId
+
