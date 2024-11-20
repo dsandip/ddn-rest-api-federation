@@ -2,12 +2,43 @@
 kind: ObjectType
 version: v1
 definition:
+  name: RelatedArticle
+  fields:
+    - name: id
+      type: Float!
+    - name: relationshipType
+      type: String!
+  graphql:
+    typeName: RelatedArticle
+    inputTypeName: RelatedArticleInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: mynodejs
+      dataConnectorObjectType: RelatedArticle
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: RelatedArticle
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - relationshipType
+
+---
+kind: ObjectType
+version: v1
+definition:
   name: Article
   fields:
     - name: authorId
       type: Float!
     - name: id
       type: Float!
+    - name: relatedArticles
+      type: "[RelatedArticle!]!"
     - name: title
       type: String!
   graphql:
@@ -23,6 +54,9 @@ definition:
         id:
           column:
             name: id
+        relatedArticles:
+          column:
+            name: related_articles
         title:
           column:
             name: title
@@ -38,32 +72,33 @@ definition:
         allowedFields:
           - authorId
           - id
+          - relatedArticles
           - title
 
 ---
 kind: Command
 version: v1
 definition:
-  name: GetAuthorArticle
+  name: GetArticle
   outputType: Article!
   arguments:
-    - name: authorId
+    - name: articleId
       type: Float!
-      description: ID of the author whose article to fetch (defaults to 1)
+      description: ID of the article to fetch (defaults to 1)
   source:
     dataConnectorName: mynodejs
     dataConnectorCommand:
-      function: getAuthorArticle
+      function: getArticle
   graphql:
-    rootFieldName: getAuthorArticle
+    rootFieldName: getArticle
     rootFieldKind: Query
-  description: Get an article by author ID
+  description: Get article by ID
 
 ---
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: GetAuthorArticle
+  commandName: GetArticle
   permissions:
     - role: admin
       allowExecution: true
@@ -72,10 +107,27 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: articleAuthor
+  name: relationship_article_detail
+  sourceType: RelatedArticle
+  target:
+    command:
+      name: GetArticle
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        argument:
+          argumentName: articleId
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: article_author
   sourceType: Article
   target:
-    command: 
+    command:
       name: GetAuthor
   mapping:
     - source:

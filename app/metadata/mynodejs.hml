@@ -40,6 +40,12 @@ definition:
               type:
                 type: named
                 name: Float
+            related_articles:
+              type:
+                type: array
+                element_type:
+                  type: named
+                  name: RelatedArticle
             title:
               type:
                 type: named
@@ -51,6 +57,16 @@ definition:
                 type: named
                 name: Float
             name:
+              type:
+                type: named
+                name: String
+        RelatedArticle:
+          fields:
+            id:
+              type:
+                type: named
+                name: Float
+            relationshipType:
               type:
                 type: named
                 name: String
@@ -78,17 +94,25 @@ definition:
           result_type:
             type: named
             name: Author
-        - name: getAuthorArticle
-          description: Get an article by author ID
+        - name: getArticle
+          description: Get article by ID
           arguments:
-            authorId:
-              description: ID of the author whose article to fetch (defaults to 1)
+            articleId:
+              description: ID of the article to fetch (defaults to 1)
               type:
                 type: named
                 name: Float
           result_type:
             type: named
             name: Article
+        - name: getArticles
+          description: Get all articles
+          arguments: {}
+          result_type:
+            type: array
+            element_type:
+              type: named
+              name: Article
       procedures: []
     capabilities:
       version: 0.1.6

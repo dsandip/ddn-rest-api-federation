@@ -10,10 +10,16 @@ interface Author {
   name: string;
 }
 
+interface RelatedArticle {
+  id: number;
+  relationshipType: string;
+}
+
 interface Article {
   id: number;
   title: string;
   author_id: number;
+  related_articles: RelatedArticle[];
 }
 
 const api = {
@@ -24,7 +30,7 @@ const api = {
  * Get author details by ID
  * @param authorId ID of the author to fetch (defaults to 1)
  * @returns Author details
- * @readonly Exposes the function as an NDC function (the function should only query data without making modifications)
+ * @readonly
  * @hml author
  */
 export async function getAuthor(
@@ -39,19 +45,34 @@ export async function getAuthor(
 }
 
 /**
- * Get an article by author ID
- * @param authorId ID of the author whose article to fetch (defaults to 1)
- * @returns Article details
- * @readonly Exposes the function as an NDC function (the function should only query data without making modifications)
- * @hml author_article
+ * Get article by ID
+ * @param articleId ID of the article to fetch (defaults to 1)
+ * @returns Article details with related articles
+ * @readonly
+ * @hml article
  */
-export async function getAuthorArticle(
-  authorId: number = 1
+export async function getArticle(
+  articleId: number = 1
 ): Promise<Article> {
-  const url = `${api.baseUrl}/author-article?authorid=${authorId}`;
+  const url = `${api.baseUrl}/article?articleid=${articleId}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw await response.json();
   }
   return response.json() as Promise<Article>;
+}
+
+/**
+ * Get all articles
+ * @returns Array of all articles with their related articles
+ * @readonly
+ * @hml articles
+ */
+export async function getArticles(): Promise<Article[]> {
+  const url = `${api.baseUrl}/articles`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw await response.json();
+  }
+  return response.json() as Promise<Article[]>;
 }

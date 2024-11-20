@@ -1,4 +1,4 @@
-import { getAuthor, getAuthorArticle } from './functions';
+import { getAuthor, getArticle, getArticles } from './functions';
 
 async function test() {
     try {
@@ -13,9 +13,15 @@ async function test() {
         console.log(author);
 
         // Test author's article
-        console.log('\nTesting article for author ID 2:');
-        const article = await getAuthorArticle(2);
+        console.log('\nTesting article for article ID 2:');
+        const article = await getArticle(2);
         console.log(article);
+
+        // Test author's article
+        console.log('\nTesting all articles');
+        const articles = await getArticles();
+        console.log(articles);
+        
 
         console.log('\nTest completed.');
     } catch (error) {

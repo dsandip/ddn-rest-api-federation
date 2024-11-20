@@ -1,0 +1,24 @@
+---
+kind: Command
+version: v1
+definition:
+  name: GetArticles
+  outputType: "[Article!]!"
+  source:
+    dataConnectorName: mynodejs
+    dataConnectorCommand:
+      function: getArticles
+  graphql:
+    rootFieldName: getArticles
+    rootFieldKind: Query
+  description: Get all articles
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: GetArticles
+  permissions:
+    - role: admin
+      allowExecution: true
+
