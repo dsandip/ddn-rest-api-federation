@@ -107,7 +107,7 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: relationship_article_detail
+  name: related_article_detail
   sourceType: RelatedArticle
   target:
     command:
